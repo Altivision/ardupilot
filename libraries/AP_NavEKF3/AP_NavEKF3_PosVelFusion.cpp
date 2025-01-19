@@ -709,6 +709,8 @@ void NavEKF3_core::FuseVelPosNED()
 
         // To-Do: this posErr should come from external nav when fusing external nav position
 
+        //alex here we are normally aid_absolute when gps is normally working
+    
         // estimate the GPS Velocity, GPS horiz position and height measurement variances.
         // Use different errors if operating without external aiding using an assumed position or velocity of zero
         if (PV_AidingMode == AID_NONE) {
@@ -805,6 +807,12 @@ void NavEKF3_core::FuseVelPosNED()
             innovVelPos[4] = stateStruct.position.y - velPosObs[4];
             varInnovVelPos[3] = P[7][7] + R_OBS_DATA_CHECKS[3];
             varInnovVelPos[4] = P[8][8] + R_OBS_DATA_CHECKS[4];
+            
+            // alex
+            //The innovation check evaluates how well the predicted position matches the observed position. 
+            //It ensures that the measurements (e.g., from GPS or external navigation) agree with the EKF's predicted state.
+
+
 
             // Apply an innovation consistency threshold test
             // Don't allow test to fail if not navigating and using a constant position
@@ -827,6 +835,10 @@ void NavEKF3_core::FuseVelPosNED()
                 posCheckPassed = true;
                 lastGpsPosPassTime_ms = imuSampleTime_ms;
             }
+
+            // alex
+            // The variance check ensures that the system’s state uncertainty (represented by the covariance matrix P) is within acceptable limits.
+            // It confirms that the filter's internal confidence about its position estimate is reasonable.
 
             // Use position data if healthy or timed out or bad IMU data
             // Always fuse data if bad IMU to prevent aliasing and clipping pulling the state estimate away

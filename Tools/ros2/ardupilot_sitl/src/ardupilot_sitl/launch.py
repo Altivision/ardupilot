@@ -292,6 +292,7 @@ class MAVProxyLaunch:
         sitl = LaunchConfiguration("sitl").perform(context)
         console = LaunchConfiguration("console").perform(context)
         map = LaunchConfiguration("map").perform(context)
+        streamrate = LaunchConfiguration("streamrate").perform(context)  # New parameter
 
         # Display launch arguments.
         print(f"command:          {command}")
@@ -300,7 +301,7 @@ class MAVProxyLaunch:
         print(f"out:              {out}")
         print(f"console:          {console}")
         print(f"map:              {map}")
-
+        print(f"streamrate:       {streamrate}")  # Display streamrate
         cmd = [
             f"{command} ",
             f"--out {out} ",
@@ -309,6 +310,7 @@ class MAVProxyLaunch:
             f"--master {master} ",
             f"--sitl {sitl} ",
             "--non-interactive ",
+            f"--streamrate={streamrate}",
         ]
 
         if console == TRUE_STRING:

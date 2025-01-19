@@ -756,7 +756,8 @@ NavEKF3::NavEKF3() :
 
 // Initialise the filter
 bool NavEKF3::InitialiseFilter(void)
-{
+{   
+    // Check Preconditions 
     if (_enable == 0 || _imuMask == 0) {
         return false;
     }
@@ -771,6 +772,8 @@ bool NavEKF3::InitialiseFilter(void)
     if (!is_positive(loop_rate)) {
         return false;
     }
+
+    //expected time
     _frameTimeUsec = 1e6 / loop_rate;
 
     // expected number of IMU frames per prediction
@@ -787,6 +790,7 @@ bool NavEKF3::InitialiseFilter(void)
     }
 #endif
 
+    //core setup
     if (core == nullptr) {
 
         // don't run multiple filters for 1 IMU
@@ -800,7 +804,7 @@ bool NavEKF3::InitialiseFilter(void)
         }
         num_cores = 0;
 
-        // count IMUs from mask
+        // count IMUs from mask (maximum number of INS instances available on this platform. by default it is 3 cores)
         for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_imuMask & (1U<<i)) {
                 coreSetupRequired[num_cores] = true;
